@@ -1,0 +1,60 @@
+;; Oyd11, Sept 2005
+;; Implementing "Turtle-DFT" algo, in MSWLogo:
+;; (world's slowest DFT?)
+
+; MSWLogo specific...:
+setscreencolor [0 0 0]
+setpencolor [0 255 0]
+setfloodcolor [0 100 255]
+
+; except for 'color' cmds the rest should not be 'MSW' specific..
+; TODO: test on BerkleyLOGO at least...
+
+cs
+rt 90
+
+make "npoints 360
+make "buff (array :npoints)
+make "outbuff (array :npoints)
+
+; Test:
+repeat :npoints [make "x 
+  ifelse repcount<(:npoints/2) [1] [-1] ; Square
+  setitem repcount :buff :x]
+
+
+to drawbuff :b
+	repeat :npoints [fd 1 lt 90
+	            fd 30*item repcount :b
+	            bk 30*item repcount :b
+		rt 90]
+end
+
+drawbuff :buff
+
+to walk :spin
+  pu home pd
+  repeat :npoints [
+     rt :spin
+     fd item repcount :buff ]
+end
+
+to walkd :spin
+ walk :spin
+ print distance [0 0]
+end
+
+; DFT using 180 'turtles' (ie, "roots of unity")
+; a DFT is just a collection of walks
+to dft :n
+ repeat :n [
+	walk repcount 
+	make "d distance [0 0]
+	setitem repcount :outbuff (:d/180)]
+end
+
+pu home pd setpc [0 100 255]
+;;dft 16
+pu home pd setpc [255 200 0]
+lt 180
+;print :outbuff
